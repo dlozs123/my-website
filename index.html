@@ -1,0 +1,1503 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的工具箱</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    .section {
+      display: none;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    .back-btn {
+      margin-top: 10px;
+    }
+    /* 掉率计算器特有样式 */
+    .drop-container { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+    .drop-result { margin-top: 20px; padding: 15px; background: #e9f7ef; border-radius: 4px; }
+    .drop-hidden { display: none; }
+    .drop-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+    .drop-table th, .drop-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    .drop-table th { background-color: #f2f2f2; }
+    .char-input { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>我的工具箱</h1>
+
+  <button onclick="showSection('gacha')">🎮 抽卡模拟器</button>
+  <button onclick="showSection('random')">🎲 随机数生成</button>
+  <button onclick="showSection('currency')">💱 汇率计算器</button>
+  <button onclick="showSection('stamina')">🔋 游戏体力</button>
+  <button onclick="showSection('calculator')">🧮 科学计算器</button>
+  <button onclick="showSection('drop')">📉 掉率计算</button>
+  <button onclick="showSection('ledger')">📔 记账本</button>
+
+  <!-- 抽卡模拟器区域 -->
+  <div id="gacha" class="section">
+    <h2>抽卡模拟器</h2>
+    <!-- 在这里放入你的抽卡模拟器代码 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>抽卡模拟器</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 1.5em;
+    }
+    input {
+      width: 60px;
+    }
+    button {
+      margin: 10px 0;
+      padding: 8px 16px;
+      font-size: 1em;
+    }
+    .history {
+      border-top: 1px solid #ccc;
+      margin-top: 20px;
+      padding-top: 10px;
+    }
+    .entry {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 抽卡模拟器（角色 + 绘卷）</h1>
+
+  <label>角色概率（%）：
+    <input type="number" id="charRate" value="0.5" step="0.1">
+  </label>
+  <label>绘卷概率（%）：
+    <input type="number" id="scrollRate" value="1.5" step="0.1">
+  </label>
+  <br><br>
+
+  <button onclick="drawTen()">✨ 10连抽</button>
+  <button onclick="clearHistory()">🗑️ 清除记录</button>
+
+  <p id="summary">已抽：0 抽 ｜角色：0 个 ｜绘卷：0 个</p>
+
+  <div class="history" id="history"></div>
+
+  <script>
+    let drawCount = 0;
+    let charCount = 0;
+    let scrollCount = 0;
+    let drawTimes = 0;
+
+    function drawTen() {
+      const charRate = parseFloat(document.getElementById('charRate').value) / 100;
+      const scrollRate = parseFloat(document.getElementById('scrollRate').value) / 100;
+      const historyDiv = document.getElementById("history");
+
+      let results = [];
+      let localChar = 0, localScroll = 0;
+
+      for (let i = 0; i < 10; i++) {
+        const roll = Math.random();
+        if (roll < charRate) {
+          results.push("🎯 角色");
+          charCount++;
+          localChar++;
+        } else if (roll < charRate + scrollRate) {
+          results.push("📜 绘卷");
+          scrollCount++;
+          localScroll++;
+        } else {
+          results.push("—");
+        }
+      }
+
+      drawCount += 10;
+      drawTimes++;
+
+      const resultText = results.join(" ｜ ");
+      const entry = document.createElement("div");
+      entry.className = "entry";
+      entry.textContent = `第 ${drawTimes} 次10连：${resultText}`;
+      historyDiv.prepend(entry);
+
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const summary = document.getElementById("summary");
+      summary.textContent = `已抽：${drawCount} 抽 ｜角色：${charCount} 个 ｜绘卷：${scrollCount} 个`;
+    }
+
+    function clearHistory() {
+      document.getElementById("history").innerHTML = "";
+      drawCount = 0;
+      charCount = 0;
+      scrollCount = 0;
+      drawTimes = 0;
+      updateSummary();
+    }
+  </script>
+</body>
+</html>
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <!-- 随机数生成区域 -->
+  <div id="random" class="section">
+    <h2>随机数生成</h2>
+    <!-- 在这里放入你的随机数生成代码 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>随机数生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        input, select {
+            padding: 5px;
+            width: 100px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>随机数生成器</h2>
+        <div class="form-group">
+            <label for="min">最小值:</label>
+            <input type="number" id="min" value="0">
+        </div>
+        <div class="form-group">
+            <label for="max">最大值:</label>
+            <input type="number" id="max" value="100">
+        </div>
+        <div class="form-group">
+            <label for="decimal">允许小数:</label>
+            <input type="checkbox" id="decimal" onchange="toggleDecimal()">
+        </div>
+        <div class="form-group" id="decimalDigitsGroup" style="display:none;">
+            <label for="digits">小数位数:</label>
+            <select id="digits">
+                <option value="1">1位</option>
+                <option value="2" selected>2位</option>
+                <option value="3">3位</option>
+                <option value="4">4位</option>
+            </select>
+        </div>
+        <button onclick="generateRandom()">生成随机数</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function toggleDecimal() {
+            const decimalCheckbox = document.getElementById('decimal');
+            const decimalDigitsGroup = document.getElementById('decimalDigitsGroup');
+            decimalDigitsGroup.style.display = decimalCheckbox.checked ? 'block' : 'none';
+        }
+
+        function generateRandom() {
+            const min = parseFloat(document.getElementById('min').value);
+            const max = parseFloat(document.getElementById('max').value);
+            const allowDecimal = document.getElementById('decimal').checked;
+            const digits = parseInt(document.getElementById('digits').value);
+            
+            if (min >= max) {
+                alert('最大值必须大于最小值');
+                return;
+            }
+
+            let randomNum;
+            if (allowDecimal) {
+                randomNum = Math.random() * (max - min) + min;
+                randomNum = parseFloat(randomNum.toFixed(digits));
+            } else {
+                randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            document.getElementById('result').textContent = randomNum;
+        }
+    </script>
+</body>
+</html>
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <!-- 汇率计算器区域 -->
+  <div id="currency" class="section">
+    <h2>汇率计算器</h2>
+    <!-- 在这里放入你的汇率计算器代码 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>汇率转换器</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+    }
+    input {
+      width: 100px;
+      padding: 5px;
+      margin-left: 8px;
+    }
+    button {
+      margin-top: 16px;
+      padding: 8px 16px;
+      font-size: 16px;
+    }
+    #tip {
+      color: gray;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💱 汇率转换器</h1>
+
+  <label>
+    人民币 1 = 
+    <input id="rateRMB" type="number" step="0.0001">
+    外币
+  </label>
+
+  <label>
+    外币 1 = 
+    <input id="rateForeign" type="number" step="0.0001">
+    人民币
+  </label>
+
+  <hr>
+
+  <label>
+    人民币金额：
+    <input id="inputRMB" type="number">
+  </label>
+
+  <label>
+    外币金额：
+    <input id="inputForeign" type="number">
+  </label>
+
+  <button onclick="convertAmount()">✨ 转换金额</button>
+
+  <p id="tip"></p>
+
+  <script>
+    let rate = 0;
+    let lastInput = null; // 记录最近输入哪一方（'rmb' 或 'foreign'）
+
+    const rateRMBInput = document.getElementById('rateRMB');
+    const rateForeignInput = document.getElementById('rateForeign');
+    const rmbInput = document.getElementById('inputRMB');
+    const foreignInput = document.getElementById('inputForeign');
+
+    function updateFromRMBRate() {
+      const rmbRate = parseFloat(rateRMBInput.value);
+      if (!isNaN(rmbRate) && rmbRate > 0) {
+        rate = rmbRate;
+        rateForeignInput.value = (1 / rate).toFixed(6);
+        saveRate(rate);
+        showTip();
+      }
+    }
+
+    function updateFromForeignRate() {
+      const foreignRate = parseFloat(rateForeignInput.value);
+      if (!isNaN(foreignRate) && foreignRate > 0) {
+        rate = 1 / foreignRate;
+        rateRMBInput.value = rate.toFixed(6);
+        saveRate(rate);
+        showTip();
+      }
+    }
+
+    function saveRate(rate) {
+      localStorage.setItem("exchangeRate", rate.toString());
+    }
+
+    function showTip() {
+      document.getElementById("tip").textContent = `当前汇率：1 人民币 = ${rate.toFixed(4)} 外币`;
+    }
+
+    rateRMBInput.addEventListener('input', updateFromRMBRate);
+    rateForeignInput.addEventListener('input', updateFromForeignRate);
+
+    rmbInput.addEventListener('input', () => { lastInput = 'rmb'; });
+    foreignInput.addEventListener('input', () => { lastInput = 'foreign'; });
+
+    function convertAmount() {
+      if (!rate || rate <= 0) {
+        alert("请先设置有效汇率");
+        return;
+      }
+
+      if (lastInput === 'rmb') {
+        const rmbVal = parseFloat(rmbInput.value);
+        if (!isNaN(rmbVal)) {
+          foreignInput.value = (rmbVal * rate).toFixed(4);
+        }
+      } else if (lastInput === 'foreign') {
+        const foreignVal = parseFloat(foreignInput.value);
+        if (!isNaN(foreignVal)) {
+          rmbInput.value = (foreignVal / rate).toFixed(4);
+        }
+      } else {
+        alert("请先输入一个金额再点击转换");
+      }
+    }
+
+    // 页面加载时恢复保存的汇率
+    window.onload = function () {
+      const savedRate = parseFloat(localStorage.getItem("exchangeRate"));
+      if (!isNaN(savedRate) && savedRate > 0) {
+        rate = savedRate;
+        rateRMBInput.value = rate.toFixed(6);
+        rateForeignInput.value = (1 / rate).toFixed(6);
+        showTip();
+      }
+    };
+  </script>
+</body>
+</html>
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <!-- 游戏体力区域 -->
+  <div id="stamina" class="section">
+    <h2>游戏体力计算</h2>
+    <!-- 在这里放入你的游戏体力计算代码 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>游戏体力计算器</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; background-color: #f5f7fa; margin: 0; padding: 20px; }
+    .dashboard { background: #2196F3; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .stamina-display { font-size: 28px; font-weight: bold; margin-bottom: 15px; }
+    .stamina-value { color: #FFEB3B; font-size: 36px; }
+    .info-row { display: flex; justify-content: space-between; margin: 8px 0; font-size: 16px; }
+    .time-value { font-weight: bold; }
+    .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, button { padding: 10px 15px; width: 100%; box-sizing: border-box; border-radius: 5px; border: 1px solid #ddd; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 10px; font-weight: bold; }
+    button.secondary { background: #f44336; }
+    .history { margin-top: 20px; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 15px; }
+    .history-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+    .progress-container { height: 8px; background: #e0e0e0; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: #FFC107; width: 0%; transition: width 0.5s ease; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="dashboard">
+      <div class="stamina-display">
+        当前体力: <span class="stamina-value" id="current-stamina-display">100</span>/100
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="info-row">
+        <span>当前时间:</span>
+        <span class="time-value" id="current-time">--:--</span>
+      </div>
+      <div class="info-row">
+        <span>下次恢复:</span>
+        <span class="time-value" id="next-recovery">--:--</span>
+      </div>
+      <div class="info-row">
+        <span>完全恢复:</span>
+        <span class="time-value" id="full-recovery">--:--</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="input-stamina">设置当前体力 (0-100):</label>
+      <input type="number" id="input-stamina" min="0" max="100" value="100" />
+    </div>
+
+    <div class="form-group">
+      <label for="input-consume">消耗体力:</label>
+      <input type="number" id="input-consume" min="0" value="0" />
+    </div>
+
+    <button id="update-btn">更新体力</button>
+    <button id="consume-btn">消耗体力</button>
+    <button class="secondary" id="clear-btn">清除历史记录</button>
+
+    <div class="history">
+      <h3>操作历史</h3>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <script>
+    class StaminaCalculator {
+      constructor() {
+        this.data = {
+          current: 100,
+          max: 100,
+          recoveryRate: 10, // 每恢复1点所需分钟数
+          lastUpdate: Date.now(),
+          history: []
+        };
+
+        this.initElements();
+        this.loadData();
+        this.setupEventListeners();
+        this.startTimers();
+        this.updateDisplay();
+      }
+
+      initElements() {
+        this.elements = {
+          staminaDisplay: document.getElementById('current-stamina-display'),
+          inputStamina: document.getElementById('input-stamina'),
+          inputConsume: document.getElementById('input-consume'),
+          progressBar: document.getElementById('progress-bar'),
+          currentTime: document.getElementById('current-time'),
+          nextRecovery: document.getElementById('next-recovery'),
+          fullRecovery: document.getElementById('full-recovery'),
+          historyList: document.getElementById('history-list')
+        };
+      }
+
+      setupEventListeners() {
+        document.getElementById('update-btn').addEventListener('click', () => this.updateStamina());
+        document.getElementById('consume-btn').addEventListener('click', () => this.consumeStamina());
+        document.getElementById('clear-btn').addEventListener('click', () => this.clearHistory());
+      }
+
+      startTimers() {
+        setInterval(() => this.updateClock(), 1000);
+        setInterval(() => this.updateStaminaByTime(), 1000);
+      }
+
+      loadData() {
+        const saved = localStorage.getItem('staminaData');
+        if (saved) {
+          const data = JSON.parse(saved);
+          this.data.current = data.current;
+          this.data.lastUpdate = data.lastUpdate;
+          this.data.history = data.history || [];
+          this.calculateOfflineRecovery();
+        }
+      }
+
+      saveData() {
+        localStorage.setItem('staminaData', JSON.stringify(this.data));
+      }
+
+calculateOfflineRecovery() {
+  const now = Date.now();
+  const minutesPassed = Math.floor((now - this.data.lastUpdate) / 60000);
+  const staminaRecovered = Math.floor(minutesPassed / this.data.recoveryRate);
+
+  if (staminaRecovered > 0) {
+    this.data.current = Math.min(this.data.max, this.data.current + staminaRecovered);
+    this.data.lastUpdate = now - ((minutesPassed % this.data.recoveryRate) * 60000); // 修正到最近一次恢复点
+    this.addHistory(`离线恢复 ${staminaRecovered} 点体力`);
+    this.saveData();
+  }
+}
+
+
+      updateClock() {
+        const now = new Date();
+        this.elements.currentTime.textContent = now.toTimeString().substring(0, 5);
+      }
+
+      updateDisplay() {
+        const now = new Date();
+        this.elements.staminaDisplay.textContent = this.data.current;
+        this.elements.inputStamina.value = this.data.current;
+        this.elements.progressBar.style.width = `${this.data.current}%`;
+        this.updateRecoveryTimes(now);
+        this.updateHistoryDisplay();
+      }
+
+      updateRecoveryTimes(now) {
+        if (this.data.current < this.data.max) {
+          const nextRecovery = new Date(this.data.lastUpdate + this.data.recoveryRate * 60000);
+          const minsRemaining = Math.ceil((nextRecovery - now) / 60000);
+          const minsToFull = (this.data.max - this.data.current) * this.data.recoveryRate;
+          const fullRecovery = new Date(now.getTime() + minsToFull * 60000);
+
+          this.elements.nextRecovery.textContent =
+            `${nextRecovery.toTimeString().substring(0, 5)} (约${minsRemaining}分钟)`;
+          this.elements.fullRecovery.textContent =
+            `${fullRecovery.toTimeString().substring(0, 5)} (约${minsToFull}分钟)`;
+        } else {
+          this.elements.nextRecovery.textContent = "已满";
+          this.elements.fullRecovery.textContent = "已满";
+        }
+      }
+
+      updateStamina() {
+        const newStamina = parseInt(this.elements.inputStamina.value);
+        if (isNaN(newStamina) || newStamina < 0 || newStamina > this.data.max) {
+          alert('请输入有效的体力值 (0-100)');
+          return;
+        }
+
+        const oldStamina = this.data.current;
+        this.data.current = newStamina;
+        this.addHistory(`手动设置体力 ${oldStamina} → ${newStamina}`);
+        this.saveData();
+        this.updateDisplay();
+      }
+
+      consumeStamina() {
+        const consume = parseInt(this.elements.inputConsume.value);
+        if (isNaN(consume) || consume < 0) {
+          alert('请输入有效的消耗值');
+          return;
+        }
+
+        const oldStamina = this.data.current;
+        this.data.current = Math.max(0, this.data.current - consume);
+        this.addHistory(`消耗体力 ${consume} 点 (${oldStamina} → ${this.data.current})`);
+        this.saveData();
+        this.updateDisplay();
+      }
+
+      updateStaminaByTime() {
+        const now = Date.now();
+        const minutesPassed = (now - this.data.lastUpdate) / 60000;
+
+        if (minutesPassed >= this.data.recoveryRate && this.data.current < this.data.max) {
+          this.data.current = Math.min(this.data.max, this.data.current + 1);
+          this.data.lastUpdate += this.data.recoveryRate * 60000;
+          this.addHistory(`自动恢复 1 点体力`);
+          this.saveData();
+          this.updateDisplay();
+        }
+      }
+
+      addHistory(text) {
+        const now = new Date();
+        this.data.history.unshift({ text, time: now.toLocaleTimeString() });
+        if (this.data.history.length > 50) this.data.history.pop();
+      }
+
+      updateHistoryDisplay() {
+        this.elements.historyList.innerHTML = '';
+        this.data.history.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'history-item';
+          div.textContent = `[${item.time}] ${item.text}`;
+          this.elements.historyList.appendChild(div);
+        });
+      }
+
+      clearHistory() {
+        this.data.history = [];
+        this.updateHistoryDisplay();
+        this.saveData();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      new StaminaCalculator();
+    });
+  </script>
+</body>
+</html>
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <!-- 科学计算器区域 -->
+  <div id="calculator" class="section">
+    <h2>科学计算器</h2>
+    <!-- 在这里放入你的科学计算器代码 -->
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科学计算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    h2 {
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      font-size: 20px;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    button {
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      background-color: #2196F3;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1976D2;
+    }
+    .wide {
+      grid-column: span 2;
+    }
+    #calcResult {
+      text-align: right;
+      font-size: 18px;
+      margin-top: 10px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h2>科学计算器</h2>
+  <input type="text" id="calcExpression" placeholder="输入表达式，如 2^3 + sqrt(9) - 5!" />
+  <div class="buttons">
+    <button onclick="calcInsert('7')">7</button>
+    <button onclick="calcInsert('8')">8</button>
+    <button onclick="calcInsert('9')">9</button>
+    <button onclick="calcInsert('/')">÷</button>
+
+    <button onclick="calcInsert('4')">4</button>
+    <button onclick="calcInsert('5')">5</button>
+    <button onclick="calcInsert('6')">6</button>
+    <button onclick="calcInsert('*')">×</button>
+
+    <button onclick="calcInsert('1')">1</button>
+    <button onclick="calcInsert('2')">2</button>
+    <button onclick="calcInsert('3')">3</button>
+    <button onclick="calcInsert('-')">−</button>
+
+    <button onclick="calcInsert('0')">0</button>
+    <button onclick="calcInsert('.')">.</button>
+    <button onclick="calcInsert('+')">+</button>
+    <button onclick="calcInsert('^')">^</button>
+
+    <button onclick="calcInsert('(')">(</button>
+    <button onclick="calcInsert(')')">)</button>
+    <button onclick="calcInsert('sqrt(')">√</button>
+    <button onclick="calcInsert('!')">!</button>
+
+    <button class="wide" onclick="calcClearInput()">清除</button>
+    <button class="wide" onclick="calcCalculate()">= 计算</button>
+  </div>
+  <div id="calcResult"></div>
+
+<script>
+  let lastResult = null; // 保存上次计算结果
+
+  function calcInsert(value) {
+    const input = document.getElementById("calcExpression");
+    const current = input.value;
+
+    if (current.includes('=')) {
+      // 如果上一次是计算结果
+      if (['+', '-', '*', '/', '^'].includes(value)) {
+        // 如果用户输入的是运算符，则继续使用上一次的结果计算
+        input.value = lastResult + value;
+      } else {
+        // 如果输入的是数字或其他，表示开始新一轮输入
+        input.value = value;
+      }
+    } else {
+      input.value += value;
+    }
+  }
+
+  function calcClearInput() {
+    document.getElementById("calcExpression").value = '';
+    document.getElementById("calcResult").textContent = '';
+    lastResult = null;
+  }
+
+  function calcCalculate() {
+    let exprInput = document.getElementById("calcExpression").value;
+    let exprEval = exprInput;
+
+    try {
+      exprEval = exprEval.replace(/\^/g, '**');
+      exprEval = exprEval.replace(/sqrt\(/g, 'Math.sqrt(');
+      exprEval = exprEval.replace(/√/g, 'Math.sqrt');
+      exprEval = exprEval.replace(/(\d+)!/g, (_, n) => calcFactorial(parseInt(n)));
+
+      const result = eval(exprEval);
+
+      lastResult = result; // 保存结果供后续使用
+      document.getElementById("calcExpression").value = `${exprInput} = ${result}`;
+      document.getElementById("calcResult").textContent = '';
+    } catch (e) {
+      document.getElementById("calcResult").textContent = '错误: 表达式无效';
+    }
+  }
+
+  function calcFactorial(n) {
+    if (n < 0) return NaN;
+    if (n === 0 || n === 1) return 1;
+    let res = 1;
+    for (let i = 2; i <= n; i++) res *= i;
+    return res;
+  }
+</script>
+
+</body>
+</html>
+
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <!-- 掉率计算区域 -->
+  <div id="drop" class="section">
+    <h2>掉率计算</h2>
+    <div class="drop-container">
+      <div>
+        <label for="charCount">出战角色数量 (1-6):</label>
+        <input type="number" id="charCount" min="1" max="6" value="3">
+      </div>
+      
+      <div id="charInputs"></div>
+      
+      <div>
+        <h3>目标掉落数量</h3>
+        <label for="targetA">A道具数量:</label>
+        <input type="number" id="targetA" min="1" value="1">
+        <label for="targetB">B道具数量:</label>
+        <input type="number" id="targetB" min="0" value="1">
+      </div>
+      
+      <button onclick="calculateDropRate()">计算掉率</button>
+      
+      <div id="dropResult" class="drop-result drop-hidden">
+        <h3>计算结果</h3>
+        <div id="resultDetails"></div>
+      </div>
+    </div>
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <!-- 记账本区域 -->
+  <div id="ledger" class="section">
+    <h2>记账本</h2>
+    <!-- 在这里放入你的记账本代码 -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人财务记账本</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+            color: #333;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .summary {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+        .summary:hover {
+            transform: translateY(-3px);
+        }
+        .account {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        .account:hover {
+            background-color: #f9f9f9;
+        }
+        .positive { 
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .negative { 
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+        }
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .panel:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px 0;
+            user-select: none;
+        }
+        .panel-header h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        .panel-content {
+            display: none;
+            padding-top: 20px;
+        }
+        .panel.active .panel-content {
+            display: block;
+        }
+        input, select {
+            padding: 10px;
+            margin: 8px 0;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn-group button {
+            flex: 1;
+            min-width: 120px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+            padding: 14px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #eaf5ff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .input-row > * {
+            flex: 1;
+        }
+        .highlight {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .progress-container {
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #3498db;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>个人财务记账本</h1>
+        <div class="subtitle">轻松管理您的资产、债务和支出计划</div>
+    </header>
+    
+    <div class="summary">
+        <h2>当前财务状况</h2>
+        <div id="accounts-list"></div>
+        <div class="progress-container">
+            <div class="progress-bar" id="debt-progress"></div>
+        </div>
+        <div class="status-bar">
+            <span>总资产</span>
+            <span>总负债</span>
+        </div>
+        <div class="total">总资产: <span id="total-assets" class="positive">0.00</span> 元</div>
+        <div class="total">总负债: <span id="total-debts" class="negative">0.00</span> 元</div>
+        <div class="total">净余额: <span id="net-balance">0.00</span> 元</div>
+    </div>
+
+    <div class="panel" id="edit-panel">
+        <div class="panel-header" onclick="togglePanel('edit-panel')">
+            <h2>账户金额设置</h2>
+            <span>▼</span>
+        </div>
+        <div class="panel-content">
+            <div class="form-group">
+                <label for="account-select">选择账户:</label>
+                <select id="account-select">
+                    <option value="alipay">支付宝</option>
+                    <option value="wechat">微信</option>
+                    <option value="bank1">中行卡1</option>
+                    <option value="bank2">中行卡2</option>
+                    <option value="huabei">花呗</option>
+                    <option value="meituan">美团月付</option>
+                    <option value="ccb">建行信用卡</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">金额 (元):</label>
+                <input type="number" id="amount" step="0.01" placeholder="输入金额">
+            </div>
+            <div class="btn-group">
+                <button onclick="updateAccount()">更新金额</button>
+                <button onclick="addToAccount()">增加金额</button>
+                <button onclick="subtractFromAccount()">减少金额</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" id="installment-panel">
+        <div class="panel-header" onclick="togglePanel('installment-panel')">
+            <h2>分期付款管理</h2>
+            <span>▼</span>
+        </div>
+        <div class="panel-content">
+            <div class="highlight">
+                <div class="total">下月需还：<span id="installment-monthly" class="negative">0.00</span> 元</div>
+                <div class="total">总剩余还款：<span id="installment-total" class="negative">0.00</span> 元</div>
+            </div>
+            <table id="installment-table">
+                <thead>
+                    <tr>
+                        <th>分期名称</th>
+                        <th>每月金额</th>
+                        <th>剩余期数</th>
+                        <th>总金额</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="form-group">
+                <label>添加新分期</label>
+                <div class="input-row">
+                    <select id="installment-name">
+                        <option value="">选择分期</option>
+                        <option value="分期1">分期1</option>
+                        <option value="分期2">分期2</option>
+                        <option value="分期3">分期3</option>
+                        <option value="分期4">分期4</option>
+                        <option value="分期5">分期5</option>
+                    </select>
+                    <input type="number" id="installment-amount" step="0.01" min="0" placeholder="每月金额">
+                    <input type="number" id="installment-periods" min="1" placeholder="剩余期数">
+                </div>
+                <button onclick="addInstallment()">添加分期</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" id="expense-panel">
+        <div class="panel-header" onclick="togglePanel('expense-panel')">
+            <h2>预计支出</h2>
+            <span>▼</span>
+        </div>
+        <div class="panel-content">
+            <div class="form-group">
+                <label for="expense-desc">支出描述:</label>
+                <input type="text" id="expense-desc" placeholder="例如: 房租、保险费、学费">
+            </div>
+            <div class="form-group">
+                <label for="expense-amount">金额 (元):</label>
+                <input type="number" id="expense-amount" step="0.01" placeholder="输入金额">
+            </div>
+            <div class="form-group">
+                <label for="expense-date">预计支出时间:</label>
+                <input type="date" id="expense-date">
+            </div>
+            <button onclick="addExpense()">添加预计支出</button>
+            <table id="expenses-table">
+                <thead>
+                    <tr>
+                        <th>描述</th>
+                        <th>金额</th>
+                        <th>预计时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 个人财务记账本 | 数据存储在您的浏览器本地</p>
+    </footer>
+
+    <script>
+        let accounts = {
+            alipay: { name: "支付宝", balance: 1250.50, type: "+" },
+            wechat: { name: "微信", balance: 580.25, type: "+" },
+            bank1: { name: "中行卡1", balance: 3500.00, type: "+" },
+            bank2: { name: "中行卡2", balance: 1200.75, type: "+" },
+            huabei: { name: "花呗", balance: 850.00, type: "-" },
+            meituan: { name: "美团月付", balance: 320.50, type: "-" },
+            ccb: { name: "建行信用卡", balance: 1560.25, type: "-" }
+        };
+        let expenses = [
+            { desc: "房租", amount: 1800, date: "2023-12-01" },
+            { desc: "保险费", amount: 650, date: "2023-12-10" }
+        ];
+        let installments = [
+            { name: "分期1", amount: 250, periods: 8 },
+            { name: "分期2", amount: 350, periods: 6 }
+        ];
+
+        function loadData() {
+            const savedAccounts = localStorage.getItem('financeAccounts');
+            const savedExpenses = localStorage.getItem('financeExpenses');
+            const savedInstallments = localStorage.getItem('financeInstallments');
+
+            if (savedAccounts) accounts = JSON.parse(savedAccounts);
+            if (savedExpenses) expenses = JSON.parse(savedExpenses);
+            if (savedInstallments) installments = JSON.parse(savedInstallments);
+
+            updateDisplay();
+            updateInstallmentDisplay();
+        }
+
+        function saveData() {
+            localStorage.setItem('financeAccounts', JSON.stringify(accounts));
+            localStorage.setItem('financeExpenses', JSON.stringify(expenses));
+            localStorage.setItem('financeInstallments', JSON.stringify(installments));
+        }
+
+        function updateDisplay() {
+            const accountsList = document.getElementById('accounts-list');
+            accountsList.innerHTML = '';
+            let netBalance = 0;
+            let totalAssets = 0;
+            let totalDebts = 0;
+            
+            for (const [key, account] of Object.entries(accounts)) {
+                const accountElement = document.createElement('div');
+                accountElement.className = 'account';
+                const value = account.type === '+' ? account.balance : -account.balance;
+                netBalance += value;
+                if (account.type === '+') totalAssets += account.balance;
+                else totalDebts += account.balance;
+                
+                accountElement.innerHTML = `
+                    <span>${account.name}</span>
+                    <span class="${account.type === '+' ? 'positive' : 'negative'}">
+                        ${account.type}${account.balance.toFixed(2)}
+                    </span>`;
+                accountsList.appendChild(accountElement);
+            }
+            
+            document.getElementById('net-balance').textContent = netBalance.toFixed(2);
+            document.getElementById('total-assets').textContent = totalAssets.toFixed(2);
+            document.getElementById('total-debts').textContent = totalDebts.toFixed(2);
+            
+            // 更新负债进度条
+            const debtProgress = document.getElementById('debt-progress');
+            const debtRatio = totalAssets > 0 ? (totalDebts / (totalAssets + totalDebts)) * 100 : 0;
+            debtProgress.style.width = `${debtRatio}%`;
+            
+            const expensesTable = document.querySelector('#expenses-table tbody');
+            expensesTable.innerHTML = '';
+            expenses.forEach((expense, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${expense.desc}</td>
+                    <td class="negative">-${expense.amount.toFixed(2)}</td>
+                    <td>${expense.date}</td>
+                    <td><button onclick="removeExpense(${index})">删除</button></td>`;
+                expensesTable.appendChild(row);
+            });
+
+            saveData();
+        }
+
+        function updateAccount() {
+            const accountId = document.getElementById('account-select').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount)) return alert('请输入有效的金额');
+            accounts[accountId].balance = amount;
+            updateDisplay();
+        }
+
+        function addToAccount() {
+            const accountId = document.getElementById('account-select').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount)) return alert('请输入有效的金额');
+            accounts[accountId].balance += amount;
+            updateDisplay();
+        }
+
+        function subtractFromAccount() {
+            const accountId = document.getElementById('account-select').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount)) return alert('请输入有效的金额');
+            accounts[accountId].balance -= amount;
+            updateDisplay();
+        }
+
+        function addExpense() {
+            const desc = document.getElementById('expense-desc').value.trim();
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const date = document.getElementById('expense-date').value;
+            if (!desc || isNaN(amount) || !date) return alert('请填写完整的支出信息');
+            expenses.push({ desc, amount, date });
+            document.getElementById('expense-desc').value = '';
+            document.getElementById('expense-amount').value = '';
+            updateDisplay();
+        }
+
+        function removeExpense(index) {
+            expenses.splice(index, 1);
+            updateDisplay();
+        }
+
+        function togglePanel(panelId) {
+            document.getElementById(panelId).classList.toggle('active');
+        }
+
+        function updateInstallmentDisplay() {
+            const table = document.querySelector('#installment-table tbody');
+            table.innerHTML = '';
+            let monthlySum = 0;
+            let totalSum = 0;
+            
+            installments.forEach((item, index) => {
+                const total = item.amount * item.periods;
+                monthlySum += item.amount;
+                totalSum += total;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.amount.toFixed(2)}</td>
+                    <td>${item.periods}</td>
+                    <td class="negative">-${total.toFixed(2)}</td>
+                    <td><button onclick="removeInstallment(${index})">删除</button></td>`;
+                table.appendChild(row);
+            });
+            
+            document.getElementById('installment-monthly').textContent = monthlySum.toFixed(2);
+            document.getElementById('installment-total').textContent = totalSum.toFixed(2);
+        }
+
+        function addInstallment() {
+            const name = document.getElementById('installment-name').value;
+            const amount = parseFloat(document.getElementById('installment-amount').value);
+            const periods = parseInt(document.getElementById('installment-periods').value);
+            
+            if (!name || isNaN(amount) || isNaN(periods)) 
+                return alert('请填写完整的分期信息');
+            if (amount <= 0) 
+                return alert('每月金额必须大于0');
+            if (periods <= 0) 
+                return alert('剩余期数必须大于0');
+                
+            if (installments.find(i => i.name === name)) 
+                return alert('该分期名称已存在');
+            if (installments.length >= 10) 
+                return alert('最多添加10笔分期');
+                
+            installments.push({ name, amount, periods });
+            document.getElementById('installment-name').value = '';
+            document.getElementById('installment-amount').value = '';
+            document.getElementById('installment-periods').value = '';
+            updateInstallmentDisplay();
+        }
+
+        function removeInstallment(index) {
+            installments.splice(index, 1);
+            updateInstallmentDisplay();
+        }
+
+        // 初始化日期输入框为当前日期
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('expense-date').value = `${year}-${month}-${day}`;
+        });
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
+
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
+  <script>
+    // 工具箱框架函数
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(div => div.style.display = 'none');
+      const section = document.getElementById(id);
+      section.style.display = 'block';
+      
+      // 特殊处理掉率计算器的初始化
+      if(id === 'drop') {
+        updateCharInputs();
+      }
+    }
+    
+    function goHome() {
+      document.querySelectorAll('.section').forEach(div => div.style.display = 'none');
+    }
+
+    // 掉率计算器函数
+    function updateCharInputs() {
+      const count = parseInt(document.getElementById('charCount').value);
+      const container = document.getElementById('charInputs');
+      container.innerHTML = '';
+      
+      for (let i = 1; i <= count; i++) {
+        const div = document.createElement('div');
+        div.className = 'char-input';
+        div.innerHTML = `
+          <label for="char${i}">角色${i}命运值 (5-100):</label>
+          <input type="number" id="char${i}" min="5" max="100" value="50">
+        `;
+        container.appendChild(div);
+      }
+    }
+    
+    function calculateDropRate() {
+      const charCount = parseInt(document.getElementById('charCount').value);
+      const targetA = parseInt(document.getElementById('targetA').value);
+      const targetB = parseInt(document.getElementById('targetB').value);
+      
+      let chars = [];
+      for (let i = 1; i <= charCount; i++) {
+        const fate = parseInt(document.getElementById(`char${i}`).value);
+        chars.push(fate);
+      }
+      
+      const aRate = 0.003;
+      let bRateA = 0;
+      let bRateB = 0;
+      
+      chars.forEach(fate => {
+        const rateMultiplier = fate === 100 ? 2 : fate / 100;
+        bRateA += rateMultiplier * 0.00038;
+        bRateB += rateMultiplier * 0.00033;
+      });
+      
+      const totalARate = 1 - (1 - aRate) * (1 - bRateA);
+      const totalBRate = bRateB;
+      const battlesForA = targetA / totalARate;
+      const battlesForB = targetB / totalBRate;
+      const totalBattles = Math.max(battlesForA, battlesForB);
+      const staminaPerBattle = charCount * 5;
+      const totalStamina = totalBattles * staminaPerBattle;
+      
+      const resultDiv = document.getElementById('dropResult');
+      const detailsDiv = document.getElementById('resultDetails');
+      
+      detailsDiv.innerHTML = `
+        <table class="drop-table">
+          <tr><th>机制</th><th>掉率</th><th>期望1个所需局数</th><th>消耗体力</th></tr>
+          <tr>
+            <td>A道具(a机制)</td>
+            <td>${(aRate * 100).toFixed(4)}%</td>
+            <td>${Math.ceil(1 / aRate)}</td>
+            <td>${Math.ceil(1 / aRate) * staminaPerBattle}</td>
+          </tr>
+          <tr>
+            <td>A道具(b机制总和)</td>
+            <td>${(bRateA * 100).toFixed(6)}%</td>
+            <td>${Math.ceil(1 / bRateA)}</td>
+            <td>${Math.ceil(1 / bRateA) * staminaPerBattle}</td>
+          </tr>
+          <tr>
+            <td>B道具(b机制总和)</td>
+            <td>${(bRateB * 100).toFixed(6)}%</td>
+            <td>${Math.ceil(1 / bRateB)}</td>
+            <td>${Math.ceil(1 / bRateB) * staminaPerBattle}</td>
+          </tr>
+          <tr>
+            <td>综合A道具(a+b机制)</td>
+            <td>${(totalARate * 100).toFixed(6)}%</td>
+            <td>${Math.ceil(1 / totalARate)}</td>
+            <td>${Math.ceil(1 / totalARate) * staminaPerBattle}</td>
+          </tr>
+        </table>
+        <h3>目标掉落: ${targetA}个A + ${targetB}个B</h3>
+        <p>预计需要: ${Math.ceil(totalBattles)} 局</p>
+        <p>预计消耗: ${Math.ceil(totalStamina)} 体力</p>
+      `;
+      
+      resultDiv.classList.remove('drop-hidden');
+    }
+
+    // 初始化掉率计算器的输入监听
+    document.getElementById('charCount').addEventListener('change', updateCharInputs);
+  </script>
+</body>
+</html>
