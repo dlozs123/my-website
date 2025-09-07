@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -53,6 +52,7 @@
   <button onclick="showSection('calculator')">🧮 科学计算器</button>
   <button onclick="showSection('drop')">📉 掉率计算</button>
   <button onclick="showSection('ledger')">📔 记账本</button>
+  <button onclick="showSection('daily-gems')">📊 每日抽卡石记录</button>
 
   <!-- 抽卡模拟器区域 -->
   <div id="gacha" class="section">
@@ -98,6 +98,12 @@
   <label>绘卷概率（%）：
     <input type="number" id="scrollRate" value="1.5" step="0.1">
   </label>
+  <label>目标角色概率（%）：
+    <input type="number" id="targetCharRate" value="0" step="0.1">
+  </label>
+  <label>目标绘卷概率（%）：
+    <input type="number" id="targetScrollRate" value="0" step="0.1">
+  </label>
   <br><br>
 
   <button onclick="drawTen()">✨ 10连抽</button>
@@ -116,6 +122,15 @@
     function drawTen() {
       const charRate = parseFloat(document.getElementById('charRate').value) / 100;
       const scrollRate = parseFloat(document.getElementById('scrollRate').value) / 100;
+      const targetCharRate = parseFloat(document.getElementById('targetCharRate').value) / 100;
+      const targetScrollRate = parseFloat(document.getElementById('targetScrollRate').value) / 100;
+      const totalRate = charRate + scrollRate;
+
+      if (targetCharRate > charRate || targetScrollRate > scrollRate) {
+        alert("目标概率不能大于总概率！");
+        return;
+      }
+
       const historyDiv = document.getElementById("history");
 
       let results = [];
@@ -124,11 +139,21 @@
       for (let i = 0; i < 10; i++) {
         const roll = Math.random();
         if (roll < charRate) {
-          results.push("🎯 角色");
+          const targetRoll = Math.random();
+          if (targetCharRate === 0 || targetRoll < targetCharRate / charRate) {
+            results.push("🎯 中");
+          } else {
+            results.push("🎯 歪");
+          }
           charCount++;
           localChar++;
         } else if (roll < charRate + scrollRate) {
-          results.push("📜 绘卷");
+          const targetRoll = Math.random();
+          if (targetScrollRate === 0 || targetRoll < targetScrollRate / scrollRate) {
+            results.push("📜 中");
+          } else {
+            results.push("📜 歪");
+          }
           scrollCount++;
           localScroll++;
         } else {
@@ -405,7 +430,7 @@
     }
 
     // 页面加载时恢复保存的汇率
-    window.onload = function () {
+    function loadExchangeRate() {
       const savedRate = parseFloat(localStorage.getItem("exchangeRate"));
       if (!isNaN(savedRate) && savedRate > 0) {
         rate = savedRate;
@@ -413,7 +438,9 @@
         rateForeignInput.value = (1 / rate).toFixed(6);
         showTip();
       }
-    };
+    }
+
+    window.onload = loadExchangeRate;
   </script>
 </body>
 </html>
@@ -549,18 +576,18 @@
         localStorage.setItem('staminaData', JSON.stringify(this.data));
       }
 
-calculateOfflineRecovery() {
-  const now = Date.now();
-  const minutesPassed = Math.floor((now - this.data.lastUpdate) / 60000);
-  const staminaRecovered = Math.floor(minutesPassed / this.data.recoveryRate);
+      calculateOfflineRecovery() {
+        const now = Date.now();
+        const minutesPassed = Math.floor((now - this.data.lastUpdate) / 60000);
+        const staminaRecovered = Math.floor(minutesPassed / this.data.recoveryRate);
 
-  if (staminaRecovered > 0) {
-    this.data.current = Math.min(this.data.max, this.data.current + staminaRecovered);
-    this.data.lastUpdate = now - ((minutesPassed % this.data.recoveryRate) * 60000); // 修正到最近一次恢复点
-    this.addHistory(`离线恢复 ${staminaRecovered} 点体力`);
-    this.saveData();
-  }
-}
+        if (staminaRecovered > 0) {
+          this.data.current = Math.min(this.data.max, this.data.current + staminaRecovered);
+          this.data.lastUpdate = now - ((minutesPassed % this.data.recoveryRate) * 60000); // 修正到最近一次恢复点
+          this.addHistory(`离线恢复 ${staminaRecovered} 点体力`);
+          this.saveData();
+        }
+      }
 
 
       updateClock() {
@@ -1394,6 +1421,46 @@ calculateOfflineRecovery() {
     <button class="back-btn" onclick="goHome()">返回主页</button>
   </div>
 
+  <!-- 新增: 每日抽卡石记录区域 -->
+  <div id="daily-gems" class="section">
+    <h2>每日抽卡石记录</h2>
+    <div class="drop-container">
+      <!-- lw 游戏区域 -->
+      <h3>游戏 lw</h3>
+      <label>有偿石:</label>
+      <input type="number" id="lw-paid" min="0" value="0">
+      <label>无偿石:</label>
+      <input type="number" id="lw-free" min="0" value="0">
+      <button onclick="recordGems('lw')">记录</button>
+      <div id="lw-records"></div>
+      <button onclick="generateChart('lw')">生成图</button>
+      <canvas id="lw-chart" width="400" height="200"></canvas>
+
+      <!-- ep 游戏区域 -->
+      <h3>游戏 ep</h3>
+      <label>有偿石:</label>
+      <input type="number" id="ep-paid" min="0" value="0">
+      <label>无偿石:</label>
+      <input type="number" id="ep-free" min="0" value="0">
+      <button onclick="recordGems('ep')">记录</button>
+      <div id="ep-records"></div>
+      <button onclick="generateChart('ep')">生成图</button>
+      <canvas id="ep-chart" width="400" height="200"></canvas>
+
+      <!-- 删除记录 -->
+      <h3>删除记录</h3>
+      <label>日期 (YYYY-MM-DD):</label>
+      <input type="text" id="delete-date" placeholder="2023-09-07">
+      <label>游戏:</label>
+      <select id="delete-game">
+        <option value="lw">lw</option>
+        <option value="ep">ep</option>
+      </select>
+      <button onclick="deleteRecord()">删除</button>
+    </div>
+    <button class="back-btn" onclick="goHome()">返回主页</button>
+  </div>
+
   <script>
     // 工具箱框架函数
     function showSection(id) {
@@ -1404,6 +1471,15 @@ calculateOfflineRecovery() {
       // 特殊处理掉率计算器的初始化
       if(id === 'drop') {
         updateCharInputs();
+      }
+      // 初始化每日抽卡石记录
+      if(id === 'daily-gems') {
+        loadGemsRecords('lw');
+        loadGemsRecords('ep');
+      }
+      // 初始化汇率计算器（确保加载）
+      if(id === 'currency') {
+        if (typeof loadExchangeRate === 'function') loadExchangeRate();
       }
     }
     
@@ -1498,6 +1574,101 @@ calculateOfflineRecovery() {
 
     // 初始化掉率计算器的输入监听
     document.getElementById('charCount').addEventListener('change', updateCharInputs);
+
+    // 新增: 每日抽卡石记录函数
+    function recordGems(game) {
+      const paidId = `${game}-paid`;
+      const freeId = `${game}-free`;
+      const paid = parseInt(document.getElementById(paidId).value);
+      const free = parseInt(document.getElementById(freeId).value);
+      if (isNaN(paid) || isNaN(free)) {
+        alert('请输入有效的石头数量');
+        return;
+      }
+      const date = new Date().toISOString().split('T')[0];
+      const recordsKey = `${game}Records`;
+      let records = JSON.parse(localStorage.getItem(recordsKey)) || [];
+      const lastRecord = records.length > 0 ? records[records.length - 1] : { paid: 0, free: 0 };
+      const paidDiff = paid - lastRecord.paid;
+      const freeDiff = free - lastRecord.free;
+      records.push({ date, paid, free, paidDiff, freeDiff });
+      localStorage.setItem(recordsKey, JSON.stringify(records));
+      loadGemsRecords(game);
+    }
+
+    function loadGemsRecords(game) {
+      const recordsKey = `${game}Records`;
+      const records = JSON.parse(localStorage.getItem(recordsKey)) || [];
+      const recordsDiv = document.getElementById(`${game}-records`);
+      recordsDiv.innerHTML = '<h4>记录:</h4>';
+      records.forEach(rec => {
+        recordsDiv.innerHTML += `<p>${rec.date}: 有偿 ${rec.paid} (Δ${rec.paidDiff}), 无偿 ${rec.free} (Δ${rec.freeDiff})</p>`;
+      });
+    }
+
+    function generateChart(game) {
+      const recordsKey = `${game}Records`;
+      const records = JSON.parse(localStorage.getItem(recordsKey)) || [];
+      if (records.length === 0) {
+        alert('没有记录，无法生成图表');
+        return;
+      }
+      records.sort((a, b) => new Date(a.date) - new Date(b.date)); // 按日期排序
+      const canvas = document.getElementById(`${game}-chart`);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const barWidth = 20;
+      const spacing = 40;
+      const maxY = Math.max(...records.map(r => Math.max(r.paid, r.free))) * 1.1;
+      const scaleY = canvas.height / maxY;
+
+      // 绘制柱状图
+      records.forEach((rec, i) => {
+        const x = i * spacing + 50;
+        // 有偿柱 (蓝色)
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(x - barWidth / 2, canvas.height - rec.paid * scaleY, barWidth / 2, rec.paid * scaleY);
+        // 无偿柱 (绿色)
+        ctx.fillStyle = 'green';
+        ctx.fillRect(x, canvas.height - rec.free * scaleY, barWidth / 2, rec.free * scaleY);
+        // x轴标签
+        ctx.fillStyle = 'black';
+        ctx.fillText(rec.date, x - 20, canvas.height - 5);
+      });
+
+      // 绘制折线图
+      ctx.beginPath();
+      ctx.strokeStyle = 'blue';
+      ctx.lineWidth = 2;
+      records.forEach((rec, i) => {
+        const x = i * spacing + 50;
+        const y = canvas.height - rec.paid * scaleY;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.strokeStyle = 'green';
+      records.forEach((rec, i) => {
+        const x = i * spacing + 50;
+        const y = canvas.height - rec.free * scaleY;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    function deleteRecord() {
+      const date = document.getElementById('delete-date').value;
+      const game = document.getElementById('delete-game').value;
+      const recordsKey = `${game}Records`;
+      let records = JSON.parse(localStorage.getItem(recordsKey)) || [];
+      records = records.filter(rec => rec.date !== date);
+      localStorage.setItem(recordsKey, JSON.stringify(records));
+      loadGemsRecords(game);
+    }
   </script>
 </body>
 </html>
